@@ -1,4 +1,5 @@
 // index.js
+require('dotenv').config(); // ← 이 줄 추가
 const express = require('express');
 const bodyParser = require('body-parser');
 const https = require('https');
