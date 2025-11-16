@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <title>날씨 조회 테스트</title>
+        <style>
+            body {
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+                padding: 40px;
+            }
+            #result {
+                margin-top: 24px;
+                font-size: 18px;
+                white-space: pre-line;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>자바스크립트 prompt로 날씨 조회</h1>
+        <p>페이지가 열리면 지역명을 입력해 보세요. (예: 서울, 대전, 판교)</p>
+
+        <button id="btn">다시 조회하기</button>
+
+        <div id="result"></div>
+
+        <script>
+            async function askAndFetchWeather() {
+                const city = prompt('날씨를 알고 싶은 지역명을 입력하세요 (예: 서울, 대전, 판교)');
+                if (!city) {
+                    document.getElementById('result').textContent = '지역명을 입력하지 않았습니다.';
+                    return;
+                }
+
+                try {
+                    const res = await fetch('/weather?city=' + encodeURIComponent(city));
+                    const data = await res.json();
+
+                    if (data.error) {
+                        document.getElementById('result').textContent = '❌ ' + data.error;
+                    } else {
+                        document.getElementById('result').textContent = data.text;
+                    }
+                } catch (e) {
+                    console.error(e);
+                    document.getElementById('result').textContent = '요청 중 오류가 발생했습니다.';
+                }
+            }
+
+            // 페이지 로드 시 한 번 실행
+            window.addEventListener('load', askAndFetchWeather);
+
+            // 버튼 눌러서 다시 조회
+            document.getElementById('btn').addEventListener('click', askAndFetchWeather);
+        </script>
+    </body>
+</html>
